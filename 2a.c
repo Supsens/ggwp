@@ -1,70 +1,73 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #define FLAG 'F'
-#define ESC 'E'
+#define ESC  'E'
 
-void stuff_data(char *data,char *stuffed_frame){
-    int data_index=0;
-    int frame_index=0;
+// --- Stuffing ---
+void stuff_data(char *data, char *stuffed_frame) {
+    int i = 0; // data index
+    int j = 0; // frame index
 
-    stuffed_frame[frame_index++]=FLAG;
+    // Add starting FLAG
+    stuffed_frame[j++] = FLAG;
 
-    while(data[data_index]!='\0'){
-        char curr_char=data[data_index];
+    // Go through each character of data
+    while (data[i] != '\0') {
+        char c = data[i];
 
-        if(curr_char==FLAG|| curr_char==ESC){
-            stuffed_frame[frame_index++]=ESC;
+        // If it's FLAG or ESC, put ESC first
+        if (c == FLAG || c == ESC) {
+            stuffed_frame[j++] = ESC;
         }
-          stuffed_frame[frame_index++]=curr_char;
-          data_index++;
 
+        // Copy the character
+        stuffed_frame[j++] = c;
+        i++;
     }
-      stuffed_frame[frame_index++]=FLAG;
-        stuffed_frame[frame_index]='\0';
+
+    // Ending FLAG
+    stuffed_frame[j++] = FLAG;
+    stuffed_frame[j] = '\0'; // null-terminate
 }
 
+// --- Unstuffing ---
 void unstuff_data(char *stuffed_frame, char *unstuffed_data) {
-    int frame_index = 1;      // Start at 1 to skip the Start Flag
-    int data_index = 0;       // Our position in the recovered data
+    int i = 1; // start from 1 to skip starting FLAG
+    int j = 0; // data index
 
-    // Loop until we hit the End Flag (the last character)
-    while (stuffed_frame[frame_index + 1] != '\0') {
-        char current_char = stuffed_frame[frame_index];
-        // If we find an ESCAPE character...
-        if (current_char == ESC) {
-            // ...skip it and just copy the *next* character
-            frame_index++;
-            unstuffed_data[data_index++] = stuffed_frame[frame_index];
-        } else {
-            // Otherwise, it's normal data, just copy it
-            unstuffed_data[data_index++] = current_char;
+    // Read until we hit the ending FLAG or end of string
+    while (stuffed_frame[i] != '\0' && stuffed_frame[i] != FLAG) {
+        char c = stuffed_frame[i];
+
+        if (c == ESC) {
+            // Skip ESC and take the next character as is
+            i++;
+            c = stuffed_frame[i];
         }
 
-        frame_index++;
+        unstuffed_data[j++] = c;
+        i++;
     }
-    unstuffed_data[data_index] = '\0';
+
+    unstuffed_data[j] = '\0';
 }
 
 int main() {
-
     char original_data[100];
-    printf("please enter data: ");
-    scanf("%s",original_data);
-
     char stuffed[200];
     char unstuffed[200];
 
-    printf("Original data:    %s\n", original_data);
+    printf("Please enter data: ");
+    scanf("%s", original_data);
+
+    printf("Original data:   %s\n", original_data);
+
     stuff_data(original_data, stuffed);
-    printf("Stuffed frame:    %s\n", stuffed);
+    printf("Stuffed frame:   %s\n", stuffed);
+
     unstuff_data(stuffed, unstuffed);
-    printf("Unstuffed data:   %s\n", unstuffed);
+    printf("Unstuffed data:  %s\n", unstuffed);
 
     return 0;
 }
-
-
-
-
-

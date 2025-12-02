@@ -46,10 +46,8 @@ int main() {
 
         // --- Find the shortest job that has arrived and is not complete ---
         for (int i = 0; i < n; i++) {
-
             // Check if process has arrived and is not finished
             if (at[i] <= curr_time && is_completed[i] == 0) {
-
                 // If this job is shorter than the current minimum
                 if (bt[i] < min_burst) {
                     min_burst = bt[i];
@@ -57,7 +55,6 @@ int main() {
                 }
             }
         }
-
         // --- Process the chosen job ---
         if (shortest_job_index == -1) {
             // No job is ready (CPU is idle), advance time
