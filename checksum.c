@@ -59,3 +59,39 @@ int main() {
 
     return 0;
 }
+
+
+
+
+#include <stdio.h>
+
+int main() {
+    int data[10], n, i, sum = 0, checksum;
+
+    printf("Enter number of data words: ");
+    scanf("%d", &n);
+
+    printf("Enter the data words:\n");
+    for (i = 0; i < n; i++)
+        scanf("%d", &data[i]);
+
+    // Calculate sum
+    for (i = 0; i < n; i++)
+        sum += data[i];
+
+    // Wrap around carry (for simplicity, assume 8-bit words)
+    while (sum >> 8)
+        sum = (sum & 255)  + (sum >> 8);
+
+    checksum = ~sum & 255;
+
+    printf("Checksum: %d\n", checksum);
+    printf("Transmitted code (data + checksum): ");
+    for (i = 0; i < n; i++)
+        printf("%d ", data[i]);
+    printf("%d\n", checksum);
+
+    return 0;
+}
+
+
