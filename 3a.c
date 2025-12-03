@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 char FLAG[] = "01111110";
 
@@ -75,5 +76,21 @@ void bit_unstuff(char *stuffed_frame, char *unstuffed_data) {
 }
 
 // -------------------- MAIN --------------------
+// -------------------- MAIN --------------------
 int main() {
-    char
+    char data[1024];
+    char stuffed[4096];
+    char unstuffed[1024];
+
+    printf("Enter binary data (0s and 1s): ");
+    scanf("%s", data);
+
+    bit_stuff(data, stuffed);
+    bit_unstuff(stuffed, unstuffed);
+
+    printf("\nOriginal Data   : %s\n", data);
+    printf("Stuffed Frame   : %s\n", stuffed);
+    printf("Unstuffed Data  : %s\n", unstuffed);
+
+    return 0;
+} 
