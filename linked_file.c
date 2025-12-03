@@ -124,3 +124,78 @@ int main() {
     }
     return 0;
 }
+
+
+
+#include <stdio.h>
+#define MAX 50
+
+struct Block {
+    int used;       // 0 = free, 1 = allocated
+    int next;       // next block number, -1 = end
+};
+
+int main() {
+    struct Block disk[MAX];
+    int start, len, i, j, count, file[MAX];
+    char ch;
+
+    for (i = 0; i < MAX; i++) {
+        disk[i].used = 0;
+        disk[i].next = -1;
+    }
+
+    printf("--- Linked File Allocation Simulation ---\n");
+
+    do {
+        printf("\nEnter starting block: ");
+        scanf("%d", &start);
+        printf("Enter file length: ");
+        scanf("%d", &len);
+
+        if (start < 0 || start >= MAX) {
+            printf("Invalid starting block!\n");
+            continue;
+        }
+        if (disk[start].used) {
+            printf("Block %d already allocated!\n", start);
+            continue;
+        }
+
+        file[0] = start;
+        count = 1;
+        for (i = 0; i < MAX && count < len; i++)
+            if (i != start && disk[i].used == 0)
+                file[count++] = i;
+
+        if (count == len) {
+            for (i = 0; i < len - 1; i++) {
+                disk[file[i]].used = 1;
+                disk[file[i]].next = file[i + 1];
+            }
+            disk[file[len - 1]].used = 1;
+            disk[file[len - 1]].next = -1;
+
+            printf("File allocated successfully.\nStart Block: %d\nBlocks: ", start);
+            j = start;
+            while (j != -1) {
+                printf("%d -> ", j);
+                j = disk[j].next;
+            }
+            printf("END\n");
+        } else {
+            printf("Allocation failed! Not enough free blocks.\n");
+        }
+
+        printf("\nDisk Status (1=Used, 0=Free):\n");
+        for (i = 0; i < MAX; i++) {
+            printf("%d ", disk[i].used);
+            if ((i + 1) % 10 == 0) printf("\n");
+        }
+
+        printf("\nAllocate another file? (y/n): ");
+        scanf(" %c", &ch);
+    } while (ch == 'y' || ch == 'Y');
+
+    return 0;
+}
